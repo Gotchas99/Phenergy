@@ -2,7 +2,8 @@ Class {
 	#name : 'TbClient',
 	#superclass : 'Object',
 	#instVars : [
-		'zn'
+		'zn',
+		'accessToken'
 	],
 	#category : 'Tibber',
 	#package : 'Tibber'
@@ -10,8 +11,14 @@ Class {
 
 { #category : 'accessing' }
 TbClient >> accessToken [
+self assert: (accessToken isNotNil).
+	^ accessToken
+]
 
-	^ 'iAGWoFjL2bGDzBv_jELAwj0CZa-MsJ1a1F5zxCnA4l0' 
+{ #category : 'accessing' }
+TbClient >> accessToken:aToken [
+
+ accessToken:=aToken 
 ]
 
 { #category : 'accessing' }
