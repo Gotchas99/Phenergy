@@ -45,6 +45,18 @@ TbClient >> home1 [
 	^ (self contents at:#homes)first
 ]
 
+{ #category : 'as yet unclassified' }
+TbClient >> hyltan [
+
+	^ '???'
+]
+
+{ #category : 'as yet unclassified' }
+TbClient >> pilhack [
+
+	^ '\"15949bdb-a487-4790-80f3-77156f0f8b48\"'
+]
+
 { #category : 'accessing' }
 TbClient >> post [
 
@@ -56,12 +68,14 @@ TbClient >> post [
 TbClient >> priceToday [
 
 	| q infoJSONs infos |
-	q := '{viewer {homes {currentSubscription {priceInfo {today {total startsAt }}}}}}'.
+	q := '{viewer {home
+		(id: ',self pilhack,') 
+		 {currentSubscription {priceInfo {today {total startsAt }}}}}}'.
 	self query: q.
 	self post.
-	infoJSONs := self home1 atPath:
-		             #( currentSubscription priceInfo today ).
-	infos := infoJSONs collect: [ :each | TbPriceInfo from:each ].
+	infoJSONs := self contents  atPath:
+		             #( home currentSubscription priceInfo today ).
+	infos := infoJSONs collect: [ :each | TbPriceInfo from: each ].
 	^ infos
 ]
 
@@ -81,10 +95,11 @@ TbClient >> url [ ^'https://api.tibber.com/v1-beta/gql'
 { #category : 'accessing' }
 TbClient >> zn [
 
-	^ zn ifNil:[zn:= ZnClient new interactivePolicy
-		        accept: ZnMimeType applicationJson;
-		        contentReader: [ :entity | 
-			        NeoJSONObject fromString: entity contents ];
-		        url: self url;
-		        setBearerAuthentication: self accessToken]
+	^ zn ifNil: [
+			  zn := ZnClient new interactivePolicy
+				        accept: ZnMimeType applicationJson;
+				        contentReader: [ :entity |  
+					        NeoJSONObject fromString: entity contents ];
+				        url: self url;
+				        setBearerAuthentication: self accessToken ]
 ]
