@@ -29,10 +29,9 @@ TbGraphQlWS >> connect [
 
 	| res |
 	self assert: url isNotNil.
-	ws := ZnWebSocket to: url.
+	ws := ZnWebSocket to: url. 
 	"ws sendMessage: '{""type"":""connection_init""}'."
-	ws sendMessage:
-		'{"type":"connection_init",
+	ws sendMessage: '{"type":"connection_init",
 			"payload":{
 				"token":"iAGWoFjL2bGDzBv_jELAwj0CZa-MsJ1a1F5zxCnA4l0"
 			}}'.

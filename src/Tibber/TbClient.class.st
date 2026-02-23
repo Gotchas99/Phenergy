@@ -27,7 +27,7 @@ TbClient >> contents [
 	^ zn contents atPath: #(#data #viewer)
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 TbClient >> getWSclient [
 
 	| qry res url cl |
@@ -45,13 +45,13 @@ TbClient >> home1 [
 	^ (self contents at:#homes)first
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 TbClient >> hyltan [
 
 	^ '???'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 TbClient >> pilhack [
 
 	^ '15949bdb-a487-4790-80f3-77156f0f8b48'
@@ -64,7 +64,7 @@ TbClient >> post [
 	^ self contents 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 TbClient >> priceToday [
 
 	| q infoJSONs infos |
