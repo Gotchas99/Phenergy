@@ -3,11 +3,18 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'url',
-		'gqws'
+		'gqws',
+		'accessToken'
 	],
 	#category : 'Tibber',
 	#package : 'Tibber'
 }
+
+{ #category : 'accessing' }
+TbSubscriber >> accessToken: aToken [
+
+	accessToken := aToken
+]
 
 { #category : 'ssl' }
 TbSubscriber >> close [
@@ -19,6 +26,9 @@ TbSubscriber >> close [
 TbSubscriber >> connect [
 
 	gqws := TbGraphQlWS new url: url.
+	gqws accessToken: accessToken 
+
+
 ]
 
 { #category : 'accessing' }

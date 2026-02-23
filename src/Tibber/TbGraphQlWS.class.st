@@ -4,11 +4,18 @@ Class {
 	#instVars : [
 		'url',
 		'ws',
-		'listener'
+		'listener',
+		'accessToken'
 	],
 	#category : 'Tibber',
 	#package : 'Tibber'
 }
+
+{ #category : 'accessing' }
+TbGraphQlWS >> accessToken: aToken [
+
+	accessToken := aToken
+]
 
 { #category : 'accessing' }
 TbGraphQlWS >> close [
@@ -29,11 +36,13 @@ TbGraphQlWS >> connect [
 
 	| res |
 	self assert: url isNotNil.
-	ws := ZnWebSocket to: url. 
-	"ws sendMessage: '{""type"":""connection_init""}'."
-	ws sendMessage: '{"type":"connection_init",
+	ws := ZnWebSocket to: url config:[:httpClient|
+		httpClient  headerAt: 'Sec-WebSocket-Protocol' put: 'graphql-transport-ws'].
+	"ws sendMessage: '{	""type"":""connection_init""	}'."
+ws sendMessage: '{
+			"type":"connection_init",
 			"payload":{
-				"token":"iAGWoFjL2bGDzBv_jELAwj0CZa-MsJ1a1F5zxCnA4l0"
+				"token":"' , accessToken , '"
 			}}'.
 	res := ws readMessage.
 	self traceCr: res
@@ -73,21 +82,20 @@ TbGraphQlWS >> subscribe [
 { #category : 'accessing' }
 TbGraphQlWS >> subscribeMessage [
 
-	| homeId json gql token msg vars payload |
+	| homeId json gql  msg vars payload |
 	homeId := '15949bdb-a487-4790-80f3-77156f0f8b48'.
-	token := 'iAGWoFjL2bGDzBv_jELAwj0CZa-MsJ1a1F5zxCnA4l0'.
 	gql := 'subscription{liveMeasurement(homeId:"' , homeId
 	       ,
 	       '"){timestamp power maxPower minPower accumulatedConsumption accumulatedConsumptionLastHour}}'.
-	vars := Dictionary newFromPairs: { 
+	vars := Dictionary newFromPairs: {
 			        #homeId.
 			        homeId }.
-	payload := Dictionary newFromPairs: { 
+	payload := Dictionary newFromPairs: {
 			           #query.
 			           gql.
 			           #variables.
 			           vars }.
-	msg := Dictionary newFromPairs: { 
+	msg := Dictionary newFromPairs: {
 			       #type.
 			       #subscribe.
 			       #id.
@@ -99,28 +107,6 @@ TbGraphQlWS >> subscribeMessage [
 	self traceCr: json.
 	self traceCr: '-----------------------------'."
 	^ json
-]
-
-{ #category : 'accessing' }
-TbGraphQlWS >> subscribeMessage_OLD [
-
-	| homeId msg gql token |
-	homeId := '15949bdb-a487-4790-80f3-77156f0f8b48'.
-	token := 'iAGWoFjL2bGDzBv_jELAwj0CZa-MsJ1a1F5zxCnA4l0'.
-	gql := 'subscription
-		{liveMeasurement(homeId:\"' , homeId
-	       , '\"){timestamp power maxPower}
-		}'.
-	msg := '{
-		"type":"subscribe", 
-		"id": 0,
-		"payload":{
-			"query": "' , gql , '",
-			"variables":
-				{"homeId":"' , homeId , '"}
-		} }'.
-	self traceCr: msg.
-	^ msg
 ]
 
 { #category : 'accessing' }

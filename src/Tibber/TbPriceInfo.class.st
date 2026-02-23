@@ -3,7 +3,8 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'start',
-		'total'
+		'total',
+		'level'
 	],
 	#category : 'Tibber',
 	#package : 'Tibber'
@@ -19,6 +20,7 @@ TbPriceInfo class >> from: aJSON [
 { #category : 'instance creation' }
 TbPriceInfo >> from: aJSON [
 
-	start := (aJSON at: #startsAt)asDateAndTime.
-	total := aJSON at: #total
+	start := (aJSON at: #startsAt) asDateAndTime.
+	total := aJSON at: #total.
+	level:= aJSON at:#level.
 ]

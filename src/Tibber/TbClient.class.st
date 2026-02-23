@@ -24,18 +24,19 @@ TbClient >> accessToken:aToken [
 { #category : 'accessing' }
 TbClient >> contents [
 
-	^ zn contents atPath: #(#data #viewer)
+	^ zn contents atPath: #( data viewer home)
 ]
 
 { #category : 'accessing' }
 TbClient >> getWSclient [
 
-	| qry res url cl |
+	| qry url cl |
 	qry := '{viewer {websocketSubscriptionUrl} }'.
 	self query: qry.
-	res := self post.
-	url := res at: #websocketSubscriptionUrl.
-	cl:= TbSubscriber new url:url.
+	self post.
+	url := zn contents atPath: #( data viewer websocketSubscriptionUrl ).
+	cl := TbSubscriber new url: url.
+	cl accessToken: accessToken .
 	^ cl
 ]
 
@@ -67,15 +68,14 @@ TbClient >> post [
 { #category : 'accessing' }
 TbClient >> priceToday [
 
-	| q infoJSONs infos |
-	q := '{viewer {home
-		(id: "' , self pilhack , '") 
-		 {currentSubscription {priceInfo {today {total startsAt }}}}}}'.
+	| q infoJSONs infos gql |
+	q:='{currentSubscription {priceInfo {today {total startsAt }}}}'.
+	gql := '{viewer {home (id: "' , self pilhack , '") ',q,' }}'.
 	"q := '{viewer {name   }}'."
-	self query: q.
+	self query: gql.
 	self post.
 	infoJSONs := self contents atPath:
-		             #( home currentSubscription priceInfo today ).
+		             #(  currentSubscription priceInfo today ).
 	infos := infoJSONs collect: [ :each | TbPriceInfo from: each ].
 	^ infos
 ]
