@@ -54,7 +54,7 @@ TbClient >> hyltan [
 { #category : 'as yet unclassified' }
 TbClient >> pilhack [
 
-	^ '\"15949bdb-a487-4790-80f3-77156f0f8b48\"'
+	^ '15949bdb-a487-4790-80f3-77156f0f8b48'
 ]
 
 { #category : 'accessing' }
@@ -69,11 +69,12 @@ TbClient >> priceToday [
 
 	| q infoJSONs infos |
 	q := '{viewer {home
-		(id: ',self pilhack,') 
+		(id: "' , self pilhack , '") 
 		 {currentSubscription {priceInfo {today {total startsAt }}}}}}'.
+	"q := '{viewer {name   }}'."
 	self query: q.
 	self post.
-	infoJSONs := self contents  atPath:
+	infoJSONs := self contents atPath:
 		             #( home currentSubscription priceInfo today ).
 	infos := infoJSONs collect: [ :each | TbPriceInfo from: each ].
 	^ infos
@@ -82,8 +83,11 @@ TbClient >> priceToday [
 { #category : 'accessing' }
 TbClient >> query: aString [
 
-	| gql ent |
-	gql := '{  "query": "' , aString , '"}'.
+	| gql ent tmp |
+	tmp := aString copyReplaceAll: String cr with: ' '.
+		tmp :=tmp copyReplaceAll: String tab with: ' '.
+	tmp := tmp copyReplaceAll: '"' with: '\"'.
+	gql := '{  "query": "' , tmp , '"}'.
 	ent := ZnEntity json: gql.
 	self zn request entity: ent
 ]
@@ -96,10 +100,12 @@ TbClient >> url [ ^'https://api.tibber.com/v1-beta/gql'
 TbClient >> zn [
 
 	^ zn ifNil: [
-			  zn := ZnClient new interactivePolicy
+			  zn := ZnClient new 
 				        accept: ZnMimeType applicationJson;
-				        contentReader: [ :entity |  
+				        contentReader: [ :entity |
 					        NeoJSONObject fromString: entity contents ];
 				        url: self url;
-				        setBearerAuthentication: self accessToken ]
+				        setBearerAuthentication: self accessToken.
+				"zn interactivePolicy."
+				zn systemPolicy. ]
 ]
