@@ -26,9 +26,9 @@ TbSubscriber >> close [
 TbSubscriber >> connect [
 
 	gqws := TbGraphQlWS new url: url.
-	gqws accessToken: accessToken 
-
-
+	gqws accessToken: accessToken.
+	gqws connect.
+	^gqws 
 ]
 
 { #category : 'accessing' }

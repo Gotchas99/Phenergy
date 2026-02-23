@@ -82,11 +82,11 @@ TbGraphQlWS >> subscribe [
 { #category : 'accessing' }
 TbGraphQlWS >> subscribeMessage [
 
-	| homeId json gql  msg vars payload |
+	| homeId json gql msg vars payload |
 	homeId := '15949bdb-a487-4790-80f3-77156f0f8b48'.
 	gql := 'subscription{liveMeasurement(homeId:"' , homeId
 	       ,
-	       '"){timestamp power maxPower minPower accumulatedConsumption accumulatedConsumptionLastHour}}'.
+	       '"){timestamp power currentL1 currentL2 currentL3 accumulatedConsumptionLastHour}}'.
 	vars := Dictionary newFromPairs: {
 			        #homeId.
 			        homeId }.
