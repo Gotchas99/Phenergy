@@ -14,16 +14,17 @@ BaselineOfTibber >> baseline: spec [
 			spec
 				baseline: 'NeoJSON'
 				with: [ spec repository: 'github://svenvc/NeoJSON/repository' ];
+				baseline: 'Teapot'
+				with: [ spec repository: 'github://zeroflag/Teapot/source' ];
 				baseline: 'ZincHTTPComponents' with: [
 						spec
 							repository: 'github://svenvc/NeoJSON/repository';
 							loads: #( 'WebSocket' );
-							 "Handle conflicts - skip if already loaded"
-            onConflict: [ :e | e useIncoming  ];
-            "Handle upgrades - stay with current version"
-            onUpgrade: [ :e | e useIncoming  ];
-            "Silence warnings"
-            onWarning: [ :e | e load ] ].
+							"Handle conflicts - skip if already loaded"onConflict: [ :e |
+								e useIncoming ];
+							"Handle upgrades - stay with current version"onUpgrade: [ :e |
+								e useIncoming ];
+							"Silence warnings"onWarning: [ :e | e load ] ].
 			spec package: 'Tibber' with: [ spec requires: #( 'NeoJSON' ) ].
 			spec group: 'default' with: #( 'Tibber' ) ]
 ]

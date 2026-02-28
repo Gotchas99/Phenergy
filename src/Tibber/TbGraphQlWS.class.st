@@ -21,14 +21,16 @@ TbGraphQlWS >> accessToken: aToken [
 TbGraphQlWS >> close [
 
 	| msg json |
-	ws ifNotNil: [ 
-		ws isConnected ifTrue: [ 
-			msg := Dictionary newFromPairs: { #type. #complete. #id. '0' }.
-			json := NeoJSONWriter toStringPretty: msg.
-			ws sendMessage: json. 
-			listener terminate.
-			listener := nil. ws close ].
-		ws := nil ]
+	ws ifNotNil: [
+			ws isConnected ifTrue: [
+					msg := Dictionary newFromPairs: { #type. #complete. #id. '0' }.
+					json := NeoJSONWriter toStringPretty: msg.
+					ws sendMessage: json.
+					listener terminate.
+					listener := nil.
+					ws close.
+					self traceCr:'WebSocket closed'. ].
+			ws := nil ]
 ]
 
 { #category : 'accessing' }
@@ -36,9 +38,11 @@ TbGraphQlWS >> connect [
 
 	| res |
 	self assert: url isNotNil.
-	ws := ZnWebSocket to: url config:[:httpClient|
-		httpClient  headerAt: 'Sec-WebSocket-Protocol' put: 'graphql-transport-ws'].
-	"ws sendMessage: '{	""type"":""connection_init""	}'."
+	self assert: accessToken isNotNil .
+	ws := ZnWebSocket to: url config: [ :httpClient |
+			      httpClient
+				      headerAt: 'Sec-WebSocket-Protocol' 
+				      put: 'graphql-transport-ws' ].
 ws sendMessage: '{
 			"type":"connection_init",
 			"payload":{
